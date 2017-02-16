@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from django.http import Http404
+from django.shortcuts import get_object_or_404
 
 from models import Producto
 
@@ -20,12 +22,27 @@ def lista_productos(request):
                "productos": productos }
     return render(request, template, contexto)
 
-def detalle(request):
+def detalle(request, object_id=None):
     #Logico de negocio alias hechizo
-    producto = Producto.objects.all()
-    print request
-    m = "productos nuevo"
-    template = "productos.html"
-    contexto= {"mensaje":m,
-               "producto": producto }
-    return render(request, template, contexto)
+    # producto = get_object_or_404(Produto, id=object_id)
+    # m = "productos nuevo"
+    # template = "detalle.html"
+    # contexto= {"mensaje":m,
+    #        "producto": producto }
+    # return render(request, template, contexto)
+
+    if object_id is not None:
+        try:
+            producto = Producto.objects.get(id=object_id)
+            m = "productos nuevo"
+            template = "detalle.html"
+            contexto= {"mensaje":m,
+                   "producto": producto }
+            return render(request, template, contexto)
+        except Producto.DoesNotExist:
+            producto = None
+            m = "productos nuevo"
+            template = "detalle.html"
+            contexto= {"mensaje":m,
+                   "producto": producto }
+            return render(request, template, contexto)
