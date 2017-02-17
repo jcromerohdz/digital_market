@@ -20,7 +20,9 @@ from productos import views
 
 urlpatterns = [
     url(r'^$', views.home, name='home'),
-    url(r'^detalle/(?P<object_id>\d+)$', views.detalle, name='detalle'),
+    url(r'^detalle/(?P<object_id>\d+)/$', views.detalle, name='detalle'),
+    url(r'^detalle/(?P<slug>[\w-]+)/$', views.detalle_s, name='detalle_s'),
+    url(r'^detalle/(?P<slug>[\w-]+)/$', views.detalle_slug, name='detalle_slug'),
     url(r'^productos/$', views.lista_productos, name='productos'),
     url(r'^admin/', admin.site.urls),
 ]
