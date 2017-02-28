@@ -2,8 +2,8 @@ from django.shortcuts import render
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 
-from models import Producto
-
+from .models import Producto
+from .forms import ProductoAddForm
 # Create your views here.
 
 def home(request):
@@ -49,6 +49,33 @@ def detalle_s(request, slug=None):
     contexto= {"mensaje":m,
            "producto": producto }
     return render(request, template, contexto)
+
+def crear_producto(request):
+    #FORM
+    form = ProductoAddForm(request.POST or None)
+    if request.method == "POST":
+        print request.POST
+    if form.is_valid():
+        # print request.POST
+        data = form.cleaned_data
+        nombre = data.get("nombre")
+        descripcion = data.get("descripcion")
+        precio = data.get("precio")
+        # nuevo_producto = Producto.object.create(nombre = nombre,
+        #                                         descripcion = descripcion,
+        #                                         precio = precio)
+        nuevo_producto = Producto()
+        nuevo_producto.nombre = nombre
+        nuevo_producto.descripcion = descripcion
+        nuevo_producto.precio = precio
+        nuevo_producto.save()
+
+    template = "crear_producto.html"
+    context = {
+        "form":form
+    }
+
+    return render(request, template, context)
 
 
 def detalle(request, object_id=None):
