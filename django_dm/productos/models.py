@@ -13,6 +13,7 @@ class Producto(models.Model):
     precio = models.DecimalField(max_digits=9999, decimal_places=2)
     precio_oferta = models.DecimalField(max_digits=9999, decimal_places=2,
                                         null=True, blank=True)
+    tipo = models.CharField(max_length = 40, blank=True, null=True, default="foto")
 
     def __unicode__(self):
         return self.nombre

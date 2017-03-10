@@ -1,0 +1,13 @@
+{%extends 'base.html'%}
+
+{%block content%}
+<h1>Productos</h1>
+<ul>
+  {%for producto in object_list%}
+    <li>{{producto.nombre}} - {{producto.descripcion}} - {{producto.precio}}</li>
+  {%empty%}
+    <li>No hay productos en existencia!</li>
+  {%endfor%}
+</ul>
+
+{%endblock %}

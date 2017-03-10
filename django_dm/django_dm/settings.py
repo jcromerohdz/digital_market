@@ -71,6 +71,7 @@ TEMPLATES = [
 
 print TEMPLATES[0]["DIRS"]
 
+
 WSGI_APPLICATION = 'django_dm.wsgi.application'
 
 
