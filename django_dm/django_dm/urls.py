@@ -17,7 +17,7 @@ from django.conf.urls import url
 from django.contrib import admin
 
 from productos import views
-from productos.views import ProductoListView, ProductoDetailView
+from productos.views import ProductoListView, ProductoDetailView, ProductoCreateView, ProductoUpdateView
 
 urlpatterns = [
     url(r'^$', views.home, name='home'),
@@ -28,6 +28,8 @@ urlpatterns = [
     url(r'^productos/$', views.lista_productos, name='productos'),
     url(r'^productos/lista/$', ProductoListView.as_view(), name='List_view'),
     #url(r'^producto/(?P<object_id>\d+)/$', ProductoDetailView.as_view(), name='detalle_view'),
+    url(r'^producto/(?P<pk>\d+)/editar/$', ProductoUpdateView.as_view(), name='update_view'),
+    url(r'^producto/crear/$', ProductoCreateView.as_view(), name='create_view'),
     url(r'^producto/(?P<pk>\d+)/$', ProductoDetailView.as_view(), name='detalle_view'),
     url(r'^producto/(?P<slug>[\w-]+)/$', ProductoDetailView.as_view(), name='slug_detalle_view'),
     url(r'^crear_producto/$', views.crear_producto, name='nuevo_producto'),

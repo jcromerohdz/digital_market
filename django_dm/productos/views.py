@@ -1,9 +1,12 @@
 from django.shortcuts import render
 from django.http import Http404
 from django.shortcuts import get_object_or_404
+#3ra Unidad
 from django.views.generic.detail import DetailView
+from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.list import ListView
 
+from django_dm.multipleSlugs import MultiSlugMixin
 
 from .models import Producto
 from .forms import ProductoAddForm, ProductosModelForm
@@ -15,8 +18,47 @@ def home(request):
     contexto= {"mensaje":m}
     return render(request, 'home.html', contexto)
 
-class ProductoDetailView(DetailView):
+class ProductoCreateView(CreateView):
     model = Producto
+#    template_name = "form.html"
+    form_class = ProductosModelForm
+    success_url = "/producto/crear/"
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(ProductoCreateView, self).get_context_data(*args, **kwargs)
+        return context
+
+class ProductoUpdateView(UpdateView):
+    model = Producto
+#    template_name = "form.html"
+    form_class = ProductosModelForm
+    success_url = "/productos/lista/"
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(ProductoUpdateView, self).get_context_data(*args, **kwargs)
+        context["submit_btn"]="Editar"
+        return context
+
+class ProductoDetailView(MultiSlugMixin, DetailView):
+    model = Producto
+    #t=MultiSlugMixin
+    #Manejar el error de multiples slugs
+    # def get_object(self, *args, **kwargs):
+    #      print self.kwargs
+    #      slug = self.kwargs.get("slug")
+    #      print slug
+    #      ModelClass = self.model
+    #      if slug is not None:
+    #          try:
+    #              #producto = get_object_or_404(Producto, slug=slug)
+    #              obj = get_object_or_404(ModelClass, slug=slug)
+    #          except:
+    # #             #producto = Producto.objects.filter(slug=slug).order_by("-nombre").first()
+    #              obj = ModelClass.objects.filter(slug=slug).order_by("-nombre").first()
+    #      else:
+    #          obj = super(ProductoDetailView, self).get_object(*args, **kwargs)
+    #
+    #      return obj
 
 class ProductoListView(ListView):
     model = Producto
