@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+from django.conf import settings
 from django.db import models
 from django.db.models.signals import pre_save
 from django.utils.text import slugify
@@ -7,8 +8,13 @@ from django.utils.text import slugify
 # Create your models here.
 
 class Producto(models.Model):
+    #usuario = models.OneToOneField(settings.AUTH_USER_MODEL)
+    usuario = models.ForeignKey(settings.AUTH_USER_MODEL)
+    administradores = models.ManyToManyField(settings.AUTH_USER_MODEL,
+                                             related_name='administradores_producto',
+                                             blank=True)#related_name=administradores_producto
     nombre  = models.CharField(max_length = 40)
-    slug  = models.SlugField(blank=True)#unique=True
+    slug  = models.SlugField(blank=True, unique=True)
     descripcion = models.TextField(null=True)
     precio = models.DecimalField(max_digits=9999, decimal_places=2)
     precio_oferta = models.DecimalField(max_digits=9999, decimal_places=2,
@@ -18,11 +24,24 @@ class Producto(models.Model):
     def __unicode__(self):
         return self.nombre
 
+def create_slug(instance, nuevo_slug=None):
+    slug = slugify(instance.nombre)
+    if nuevo_slug is not None:
+        slug = nuevo_slug
+
+    qs = Producto.objects.filter(slug=slug)
+    existe = qs.exists()
+    if existe:
+        nuevo_slug = "%s-%s" %(slug, qs.last().id)
+        return create_slug(instance, nuevo_slug=nuevo_slug)
+
+    return slug
+
 def producto_pre_save_reciever(sender, instance, *args, **kwargs):
     print sender
     print instance
 
     if not instance.slug:
-        instance.slug = slugify(instance.nombre)
+        instance.slug = create_slug(instance)
 
 pre_save.connect(producto_pre_save_reciever, sender=Producto)

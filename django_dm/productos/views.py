@@ -20,13 +20,21 @@ def home(request):
 
 class ProductoCreateView(CreateView):
     model = Producto
-#    template_name = "form.html"
+#   template_name = "form.html"
     form_class = ProductosModelForm
     success_url = "/producto/crear/"
 
     def get_context_data(self, *args, **kwargs):
         context = super(ProductoCreateView, self).get_context_data(*args, **kwargs)
+        context["submit_btn"]="Guardar"
         return context
+
+    def form_valid(self, form):
+        usuario = self.request.user
+        form.instance.usuario = usuario
+        valid_data = super(ProductoCreateView, self).form_valid(form)
+        form.instance.administradores.add(usuario)
+        return valid_data
 
 class ProductoUpdateView(UpdateView):
     model = Producto
@@ -38,6 +46,14 @@ class ProductoUpdateView(UpdateView):
         context = super(ProductoUpdateView, self).get_context_data(*args, **kwargs)
         context["submit_btn"]="Editar"
         return context
+
+    def get_object(self, *args, **kwargs):
+        usuario = self.request.user
+        obj = super(ProductoUpdateView, self).get_object(*args, **kwargs)
+        if obj.usuario == usuario or usuario in obj.administradores.all():
+            return obj
+        else:
+            return Http404
 
 class ProductoDetailView(MultiSlugMixin, DetailView):
     model = Producto

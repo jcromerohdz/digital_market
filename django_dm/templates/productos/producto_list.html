@@ -1,13 +1,22 @@
-{%extends 'base.html'%}
+{%extends 'base2.html'%}
 
 {%block content%}
-<h1>Productos</h1>
-<ul>
+
+
   {%for producto in object_list%}
-    <li>{{producto.nombre}} - {{producto.descripcion}} - {{producto.precio}}</li>
+    <tr>
+      <td>{{producto.id}}</td>
+      <td>{{producto.nombre}}</td>
+      <td>{{producto.descripcion}}</td>
+      <td>{{producto.precio}}</td>
+      <td>{{producto.tipo}}</td>
+    </tr>
+
+
+    <!-- <li>{{producto.nombre}} - {{producto.descripcion}} - {{producto.precio}}</li> -->
   {%empty%}
-    <li>No hay productos en existencia!</li>
+    <h1>{{producto.precio}}</h1>
   {%endfor%}
-</ul>
+
 
 {%endblock %}

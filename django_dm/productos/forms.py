@@ -1,6 +1,7 @@
 from django import forms
 
 from .models import Producto
+from django.utils.text import slugify
 
 OPCIONES_TIPO = (
     ('foto', "Foto"),
@@ -47,6 +48,16 @@ class ProductosModelForm(forms.ModelForm):
             "precio": forms.NumberInput(attrs={'class': 'form-control'}),
 
         }
+
+    def clean(self, *args, **kwargs):
+        clean_data = super(ProductosModelForm, self).clean(*args, **kwargs)
+        print clean_data
+        # nombre = clean_data.get("nombre")
+        # slug = slugify(nombre)
+        # qs = Producto.objects.filter(slug=slug).exists()
+        # if qs:
+        #     raise forms.ValidationError("Ese nombre ya existe!, de uno nuevo!. Por favor intente de nuevo.")
+        # return clean_data
 
     def clean_precio(self):
         precio = self.cleaned_data.get("precio")
