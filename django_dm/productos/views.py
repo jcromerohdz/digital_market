@@ -1,5 +1,15 @@
+import os
+
+from django.conf import settings
+#from django.core.servers.basehttp import FileWrapper
+from mimetypes import guess_type
+
+
+
+
+from wsgiref.util import FileWrapper
 from django.shortcuts import render
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404
 #3ra Unidad
 from django.views.generic.detail import DetailView
@@ -7,6 +17,8 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.list import ListView
 
 from django_dm.multipleSlugs import MultiSlugMixin
+
+from django_dm.mixins import LoginRequiredMixin
 
 from .models import Producto
 from .forms import ProductoAddForm, ProductosModelForm
@@ -18,11 +30,11 @@ def home(request):
     contexto= {"mensaje":m}
     return render(request, 'home.html', contexto)
 
-class ProductoCreateView(CreateView):
+class ProductoCreateView(LoginRequiredMixin, CreateView):
     model = Producto
 #   template_name = "form.html"
     form_class = ProductosModelForm
-    success_url = "/producto/crear/"
+    #success_url = "/producto/crear/"
 
     def get_context_data(self, *args, **kwargs):
         context = super(ProductoCreateView, self).get_context_data(*args, **kwargs)
@@ -36,11 +48,11 @@ class ProductoCreateView(CreateView):
         form.instance.administradores.add(usuario)
         return valid_data
 
-class ProductoUpdateView(UpdateView):
+class ProductoUpdateView(LoginRequiredMixin, UpdateView):
     model = Producto
 #    template_name = "form.html"
     form_class = ProductosModelForm
-    success_url = "/productos/lista/"
+    #success_url = "/productos/lista/"
 
     def get_context_data(self, *args, **kwargs):
         context = super(ProductoUpdateView, self).get_context_data(*args, **kwargs)
@@ -75,6 +87,31 @@ class ProductoDetailView(MultiSlugMixin, DetailView):
     #          obj = super(ProductoDetailView, self).get_object(*args, **kwargs)
     #
     #      return obj
+
+class ProductoDownloadView(MultiSlugMixin, DetailView):
+    model = Producto
+
+    def get(self, request, *args, **kwargs):
+        obj = self.get_object()
+        if obj in request.user.misproductos.productos.all():
+            filepath = os.path.join(settings.PROTECTED_ROOT, obj.media.path)
+            guessed_type = guess_type(filepath)[0]
+            wrapper = FileWrapper(file(filepath))
+            mimetype = 'application/force-download'
+            if guessed_type :
+                mimetype = guessed_type
+
+            response =  HttpResponse(wrapper, content_type=mimetype )
+
+            if not request.GET.get("preview"):
+                response["Content-Disposition"] = "attachment; filename=%s" %(obj.media.name)
+
+            response["X-SendFile"] =  str(obj.media.name)
+            return response
+        else:
+            raise Http404
+
+
 
 class ProductoListView(ListView):
     model = Producto

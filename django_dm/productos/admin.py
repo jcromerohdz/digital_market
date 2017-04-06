@@ -2,7 +2,7 @@ from django.contrib import admin
 
 # Register your models here.
 
-from productos.models import Producto
+from productos.models import Producto, MisProductos
 
 class ProductoAdmin(admin.ModelAdmin):
     list_display = ["__unicode__", "descripcion", "precio", "precio_oferta"]
@@ -13,3 +13,5 @@ class ProductoAdmin(admin.ModelAdmin):
         model = Producto
 
 admin.site.register(Producto, ProductoAdmin)
+
+admin.site.register(MisProductos)

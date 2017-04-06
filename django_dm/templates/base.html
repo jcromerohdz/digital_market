@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+
+{%load staticfiles%}
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -12,7 +14,8 @@
     <title>Jumbotron Template for Bootstrap</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <!-- <link href="/static/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link href="{%static 'css/bootstrap.min.css'%}" rel="stylesheet">
     <link href="/static/css/mycss.css" rel="stylesheet">
 
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
