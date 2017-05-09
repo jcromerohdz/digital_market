@@ -8,7 +8,7 @@
     <h2>{{producto.precio}}</h2>
 
     {%if request.user.is_authenticated and producto.media  and producto in request.user.misproductos.productos.all%}
-      <!-- {{request.user.misproductos.productos.all}} -->
+      {{request.user.misproductos.productos.all}}
       <a href="{{producto.get_download}}?preview=True">Preview</a>
       <a href="{{producto.get_download}}">Download</a>
 

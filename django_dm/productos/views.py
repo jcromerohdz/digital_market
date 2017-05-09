@@ -16,6 +16,9 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.list import ListView
 
+#project implementation Q lookups
+from django.db.models import Q
+
 from django_dm.multipleSlugs import MultiSlugMixin
 
 from django_dm.mixins import LoginRequiredMixin
@@ -69,6 +72,8 @@ class ProductoUpdateView(LoginRequiredMixin, UpdateView):
 
 class ProductoDetailView(MultiSlugMixin, DetailView):
     model = Producto
+
+
     #t=MultiSlugMixin
     #Manejar el error de multiples slugs
     # def get_object(self, *args, **kwargs):
@@ -118,6 +123,13 @@ class ProductoListView(ListView):
 
     def get_queryset(self, *args, **kwargs):
         qs = super(ProductoListView, self).get_queryset(**kwargs)
+        query = self.request.GET.get("q")
+        #qs = qs.filter(nombre__icontains=query)
+        qs =qs.filter(
+                      Q(nombre__icontains=query)|
+                      Q(descripcion__icontains=query)
+                      ).order_by("nombre")
+        print query
         return qs
 
 def lista_productos(request):
