@@ -38,10 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'productos',
+    'accounts'
 
 ]
-
-AUTH_USER_MODEL = 'productos.MyUser'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -54,6 +53,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'django_dm.urls'
+LOGIN_URL="/login"
+LOGIN_REDIRECT_URL="/productos/lista/?q="
 
 TEMPLATES = [
     {

@@ -19,6 +19,8 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 
+from accounts.views import UserRegisterView
+
 # from productos import views
 # from productos.views import ProductoListView, ProductoDetailView, ProductoCreateView, ProductoUpdateView
 
@@ -38,6 +40,8 @@ urlpatterns = [
     # url(r'^crear_producto/$', views.crear_producto, name='nuevo_producto'),
     url(r'^admin/', admin.site.urls),
     url(r'^productos/', include("productos.urls", namespace='productos')),
+    url('^', include('django.contrib.auth.urls')),
+    url(r'^register/$', UserRegisterView.as_view(), name='Registro'),
 
 ]
 

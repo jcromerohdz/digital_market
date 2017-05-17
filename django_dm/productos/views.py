@@ -3,14 +3,11 @@ import os
 from django.conf import settings
 #from django.core.servers.basehttp import FileWrapper
 from mimetypes import guess_type
-
-
-
-
 from wsgiref.util import FileWrapper
 from django.shortcuts import render
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404
+
 #3ra Unidad
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
@@ -32,6 +29,7 @@ def home(request):
     m = "Hello Django!!!!"
     contexto= {"mensaje":m}
     return render(request, 'home.html', contexto)
+
 
 class ProductoCreateView(LoginRequiredMixin, CreateView):
     model = Producto
