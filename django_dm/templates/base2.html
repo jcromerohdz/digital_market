@@ -47,8 +47,8 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="#">Dashboard</a></li>
-            <li><a href="#">Settings</a></li>
+            <li><a href="#" data-toggle="modal" data-target="#myModal">Nuevo producto</a></li>
+            <li><a href="#">lista de productos</a></li>
             <li><a href="#">Profile</a></li>
             <li><a href="#">Help</a></li>
           </ul>
@@ -97,6 +97,56 @@
       </div>
     </div>
 
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Agregar Nuevo Producto</h4>
+      </div>
+      <div class="modal-body">
+        <form method="POST" action="" enctype="miltipart/form-data" id="myForm" data-toggle="validator" role="form">
+                                <div class="form-group">
+                                    {%block usuario%}
+
+                                    {%endblock%}
+                                </div>
+                                  <div class="form-group">
+                                      <label for="product-name" class="control-label">Nombre del prducto:</label>
+                                      <input type="text" class="form-control" id="producto-name" >
+                                  </div>
+                                  <div class="form-group">
+                                      <label for="nombre-obra" class="control-label">Descripción</label>
+
+                                      <input type="text" class="form-control" id="description" aria-describedby="helpBlock1" >
+                                      <span id="helpBlock1" class="help-block">Necesitamos la decripción!.</span>
+
+                                  </div>
+                                  <div class="form-group">
+                                      <label for="precion" class="control-label">Precio del producto</label>
+                                      <input type="number" class="form-control" id="precio" aria-describedby="helpBlock2">
+                                      <span id="helpBlock2" class="help-block">Necesitamos el precio del producto.</span>
+                                  </div>
+                                  <div class="form-group">
+                                      <label for="status-obra" class="control-label">Tipo</label>
+                                      <select class="form-control" id="tipo" aria-describedby="helpBlock3">
+                                       <option value="Libro">Libro</option>
+                                       <option value="Foto">Foto</option>
+                                       <option value="Musica">Musica</option>
+                                     </select>
+                                     <span id="helpBlock3" class="help-block">Necesitamos tipo del producto!.</span>
+                                  </div>
+
+                              </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" onclick="producto()">Agregar prodcuto</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
@@ -107,5 +157,106 @@
     <!-- <script src="../../assets/js/vendor/holder.min.js"></script> -->
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <!-- <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script> -->
+    <script type="text/javascript">
+    $('#myModal').on('shown.bs.modal', function () {
+          $('#myInput').focus()
+    })
+
+    function validateText(id){
+              var id = "#"+id;
+
+              if($(id).val()==""){
+                var div = $(id).closest("div");
+                div.addClass("has-error");
+                return false;
+              }else{
+                var div = $(id).closest("div");
+                div.removeClass("has-error");
+                // div.addClass("has-success");
+                return true;
+              }
+
+    }
+
+
+    function producto(){
+
+                function getCookie(name) {
+                    var cookieValue = null;
+                    if (document.cookie && document.cookie != '') {
+                        var cookies = document.cookie.split(';');
+                        for (var i = 0; i < cookies.length; i++) {
+                            var cookie = jQuery.trim(cookies[i]);
+                            // Does this cookie string begin with the name we want?
+                            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                break;
+                            }
+                        }
+                    }
+                    return cookieValue;
+                }
+                var csrftoken = getCookie('csrftoken');
+                function csrfSafeMethod(method) {
+                    // these HTTP methods do not require CSRF protection
+                    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+                }
+                $.ajaxSetup({
+                    beforeSend: function(xhr, settings) {
+                        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                        }
+                    }
+                });
+
+                 //var address_input = document.getElementById("address");
+                 //var autocomplete = new google.maps.places.Autocomplete(address_input);
+
+
+                //validation form myForm fields
+                if (!validateText("producto-name")){
+                  return false;
+                }
+                if (!validateText("description")){
+                  return false;
+                }
+                if (!validateText("precio")){
+                  return false;
+                }
+                if (!validateText("tipo")){
+                  return false;
+                }
+
+
+
+                var productName= $($.parseHTML($('#producto-name').val())).text();
+                var descripcion = $($.parseHTML($('#descripcion').val())).text();
+                var precio = $('#precio').val();
+                var tipo = $('#tipo').val();
+
+                
+                $.ajax({
+                    url: "/new_producto/",
+                    data: JSON.stringify({"nombre":productName,
+                                          "descripcion":descripcion,
+                                          "precio":precio,
+                                          "tipo":tipo
+                                          }),
+
+                    method: 'POST',
+                    dataType: "json",
+                    success: function(result) {
+                        alert("¡producto nuevo exitoso!");
+
+
+                        $('#myForm').trigger("reset");
+
+                    }
+                });
+
+            }
+
+
+    </script>
   </body>
 </html>

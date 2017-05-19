@@ -20,6 +20,8 @@ from django_dm.multipleSlugs import MultiSlugMixin
 
 from django_dm.mixins import LoginRequiredMixin
 
+import json
+
 from .models import Producto
 from .forms import ProductoAddForm, ProductosModelForm
 # Create your views here.
@@ -241,3 +243,26 @@ def detalle(request, object_id=None):
     #         contexto= {"mensaje":m,
     #                "producto": producto }
     #         return render(request, template, contexto)
+
+def new_producto(request):
+    if request.user.is_authenticated:
+        if request.method == "POST":
+            json_data = json.loads(request.body)
+            user = request.user
+            nombre = json_data["nombre"]
+            descripcion = json_data["descripcion"]
+            precio = json_data["precio"]
+            tipo = json_data["tipo"]
+
+
+        producto = Producto.objects.get_or_create(
+			usuario = request.user,
+			nombre = nombre,
+			descripcion = descripcion,
+			precio = precio,
+			tipo = tipo
+			)
+
+        print "Producto exitoso!"
+        datar = json.dumps({'test':'exitoso!'})
+    return HttpResponse(datar, content_type='application/json')

@@ -21,7 +21,7 @@ from django.conf.urls.static import static
 
 from accounts.views import UserRegisterView
 
-# from productos import views
+from productos import views
 # from productos.views import ProductoListView, ProductoDetailView, ProductoCreateView, ProductoUpdateView
 
 urlpatterns = [
@@ -42,6 +42,7 @@ urlpatterns = [
     url(r'^productos/', include("productos.urls", namespace='productos')),
     url('^', include('django.contrib.auth.urls')),
     url(r'^register/$', UserRegisterView.as_view(), name='Registro'),
+    url(r'^new_producto/$', views.new_producto, name='newProduct'),
 
 ]
 

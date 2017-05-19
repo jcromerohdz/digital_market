@@ -25,5 +25,16 @@
     <h1>{{producto.precio}}</h1>
   {%endfor%}
 
+  {%block usuario%}
+
+  {%if request.user.is_authenticated%}
+    <label for="user-name" class="control-label">Nombre del usuario</label>
+    <input type="text" class="form-control" id="username-name" value="{{request.user.username}}" desable >
+
+
+  {%endif%}
+
+  {%endblock%}
+
 
 {%endblock %}
